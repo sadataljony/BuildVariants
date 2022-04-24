@@ -1,0 +1,131 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.sadataljony.app.android.buildvariants"
+        minSdk 21
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+
+        debug {
+            testCoverageEnabled true
+            matchingFallbacks = ['debug']
+            debuggable true
+            manifestPlaceholders = [crashlyticsEnabled: "false",
+                                    appIcon           : "@mipmap/ic_launcher_dev",
+                                    appIconRound      : "@mipmap/ic_launcher_dev"
+            ]
+            resValue "string", "app_name", "BV Debug"
+            buildConfigField "String", "ROOT_URL", "\"http://www.bv.com\""
+            buildConfigField "String", "PROJECT_NAME", "\"/debug/api\""
+        }
+
+        develop {
+            initWith debug
+            versionNameSuffix '-dev'
+            applicationIdSuffix = ".dev"
+            manifestPlaceholders = [crashlyticsEnabled: "false",
+                                    appIcon           : "@mipmap/ic_launcher_dev",
+                                    appIconRound      : "@mipmap/ic_launcher_dev"
+            ]
+            resValue "string", "app_name", "BV Dev"
+            buildConfigField "String", "ROOT_URL", "\"http://http://www.bv.com\""
+            buildConfigField "String", "PROJECT_NAME", "\"/develop/api\""
+        }
+
+        qaRealIP {
+            initWith debug
+            renderscriptDebuggable true
+            multiDexEnabled true
+            versionNameSuffix '-qaRealIP'
+            applicationIdSuffix = ".qareal"
+            manifestPlaceholders = [crashlyticsEnabled: "false",
+                                    appIcon           : "@mipmap/ic_launcher_stg",
+                                    appIconRound      : "@mipmap/ic_launcher_stg"
+            ]
+            resValue "string", "app_name", "BV QA Real"
+            buildConfigField "String", "ROOT_URL", "\"https://http://www.bv.com\""
+            buildConfigField "String", "PROJECT_NAME", "\"/qarealip/api\""
+        }
+
+        release {
+            debuggable false
+            minifyEnabled false
+            manifestPlaceholders = [crashlyticsEnabled: "true",
+                                    appIcon           : "@mipmap/app_icon",
+                                    appIconRound      : "@mipmap/app_icon_round"
+            ]
+            resValue "string", "app_name", "BV"
+            buildConfigField "String", "ROOT_URL", "\"http://www.bv.com\""
+            buildConfigField "String", "PROJECT_NAME", "\"/release/api\""
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        releaseDebug {
+            initWith debug
+            manifestPlaceholders = [crashlyticsEnabled: "false",
+                                    appIcon           : "@mipmap/app_icon",
+                                    appIconRound      : "@mipmap/app_icon_round"
+            ]
+            resValue "string", "app_name", "BV Release Debug"
+            buildConfigField "String", "ROOT_URL", "\"http://www.bv.com\""
+            buildConfigField "String", "PROJECT_NAME", "\"/releasedebug/api\""
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        staging {
+            initWith debug
+            renderscriptDebuggable true
+            multiDexEnabled true
+            versionNameSuffix '-qa'
+            applicationIdSuffix = ".staging"
+            manifestPlaceholders = [crashlyticsEnabled: "false",
+                                    appIcon           : "@mipmap/ic_launcher_stg",
+                                    appIconRound      : "@mipmap/ic_launcher_stg"
+            ]
+            resValue "string", "app_name", "BV QA"
+            buildConfigField "String", "ROOT_URL", "\"http://www.bv.com\""
+            buildConfigField "String", "PROJECT_NAME", "\"/qa/api\""
+        }
+
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def flavor = variant.name
+            def versionName = variant.versionName
+            outputFileName = "HR_v${versionName}.apk"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
